@@ -35,7 +35,8 @@ export default function Jukebox ({ setSongList, songList, rooms, setRooms, socke
       const val = e.target.value
       e.target.value = ''
       setDownloading(true)
-      fetch(process.env.REACT_APP_URL + '/search?q=' + val.trim(), {
+
+      fetch(import.meta.env.VITE_REACT_APP_URL + '/search?q=' + val.trim(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(socketOBJ)
