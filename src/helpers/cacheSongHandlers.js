@@ -11,6 +11,7 @@ export function cacheSongHandler (name, myDB, cacheState) {
 
   //make this a GET request
   fetch(`${import.meta.env.VITE_REACT_APP_URL}/downloads/${name}`, {
+    mode: 'no-cors',
     method: 'GET',
     headers: {
       'Content-Type': 'audio/mpeg'
