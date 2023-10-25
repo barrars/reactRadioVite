@@ -8,7 +8,13 @@ export function cacheSongHandler (name, myDB, cacheState) {
   // console.info(myDB)
   console.info('RUNNING add SONG to cache')
   // fetch(`https://chat-radio.com/downloads/${name}`)
-  fetch(`${import.meta.env.VITE_REACT_APP_URL}/downloads/${name}`)
+
+  //make this a GET request
+  fetch(`${import.meta.env.VITE_REACT_APP_URL}/downloads/${name}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'audio/mpeg'
+    } })
     .then(response => {
       // response.headers.forEach(console.info);
       // for (const entry of response.headers.entries()) {
