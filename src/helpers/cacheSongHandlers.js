@@ -11,16 +11,12 @@ export function cacheSongHandler (name, myDB, cacheState) {
 
   //make this a GET request
   fetch(`${import.meta.env.VITE_REACT_APP_URL}/downloads/${name}`, {
-    mode: 'no-cors',
+    // mode: 'no-cors',
     method: 'GET',
     headers: {
       'Content-Type': 'audio/mpeg'
     } })
     .then(response => {
-      // response.headers.forEach(console.info);
-      // for (const entry of response.headers.entries()) {
-      //   console.info(entry)
-      // }
       const reader = response.body.getReader()
       return new ReadableStream({
         start (controller) {
