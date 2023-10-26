@@ -8,8 +8,8 @@ export default function Song ({ click, cached, song, cacheSongHandler, deleteSon
       {
         cached === 'Cached'
         // cached.includes(song.fileName)
-          ? <button className='bg-slate-400/30 hover:border-red-300 border-2' onClick={() => deleteSongHandler(song.fileName, mainStore, setCachedSongs)}>delete from cache</button>
-          : <button className='bg-green-400/30 hover:border-red-300 border-2' onClick={() => cacheSongHandler(song.fileName, mainStore, setCachedSongs)}>save this song</button>
+          ? <button className='bg-slate-400/30 hover:border-red-300 border-2' onClick={() => deleteSongHandler(song.fileName || song, mainStore, setCachedSongs)}>delete from cache</button>
+          : <button className='bg-green-400/30 hover:border-red-300 border-2' onClick={() => cacheSongHandler(song.fileName ||song , mainStore, setCachedSongs)}>save this song</button>
       }    </div>
   )
 }

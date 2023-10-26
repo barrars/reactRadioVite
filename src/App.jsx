@@ -64,9 +64,21 @@ const App = () => {
       console.log('socket  received joined event', { room, count, from })
       // increment count in room
       const index = roomTabs.findIndex(obj => obj.room === room)
+      // if index is -1, room is not in roomTabs and should be added
+      console.log(`index of room ${room} is ${index}`);
+      if (index === -1) {
+        console.log(`room ${room} is not in roomTabs, adding it`);
+        roomTabs.push({ room, users: count })
+        console.log([...roomTabs])
+        setroomTabs([...roomTabs])
+        return
+      } else if (index !== -1) {
       roomTabs[index] = { room, users: count }
       console.log(`roomTabs is ${roomTabs}`)
+      console.log(roomTabs);
+      // update roomTabs
       setroomTabs([...roomTabs])
+      }
     })
 
     socket.on('connect_error', (err) => {

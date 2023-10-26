@@ -13,6 +13,7 @@ export default function SongList ({ songList, username }) {
     mainStore.keys().then(keys => {
       // console.log('main store ', keys)
       setCachedSongs(keys)
+      console.log('cached songs ', cachedSongs);
     })
   }, [])
   const [playCachedSong, setplayCachedSong] = useState('')
@@ -51,50 +52,4 @@ export default function SongList ({ songList, username }) {
     </>
 
   )
-
-  // if (songList === 'fetching' || songList === 'done' || cachedSongs === 'fetching') {
-  // console.log('STILLLLL LOADDDINGG>>??>>??>??');
-  // console.log(songList);
-  //     return (
-  //         <p>Trying to Fetch Songs.....</p>
-  //     )
-  // } else if (songList === 'err') {
-  //     console.log('offline!!')
-  //     // return (
-  //     //     <div>
-  //     //         {cachedSongs.length > 0 && cachedSongs.map((song, i) => {
-  //     //             return (
-  //     //                 <div key={i}>
-  //     //                     <Song name={song} />
-  //     //                     <button onClick={playCachedSongHandler.bind(this, song)}>Play From Cache</button>
-  //     //                 </div>
-  //     //             )
-  //     //         })}
-  //     //         {cachedSongs.length === 0 && <p>you didnt save any songs for offline play!</p>}
-  //     //         {offlineAudio}
-  //     //     </div>
-  //     // )
-  // }else {
-  // console.log('WE SHOULD BE RETURNNING A SONG LIST HEREEEEEE');
-  //     return (
-  //         <div>
-  //             {onlineAudio}
-  //             <div>
-  //                 {songList.map((song, i) => {
-  // console.log(song);
-  //                     return song.deleted ? null :
-  //                         < div key={song.fileSlug} >
-  //                             <Song song={song} name={song.fileName} click={songClickHandler} cached={cachedSongs.includes(song.fileName) ? "Cached" : "not cachaed"} />
-
-  //                             {/* {
-  //                                 cachedSongs.includes(song.fileName)
-  //                                     ? <button onClick={deleteSongHandler.bind(this, song.fileName, mainStore, setCachedSongs)}>delete from cache</button>
-  //                                     : <button onClick={cacheSongHandler.bind(this, song.fileName, mainStore, setCachedSongs)}>save this song</button>
-  //                             } */}
-  //                         </div>
-  //                 })}
-  //             </div>
-  //         </div >
-  //     )
-  // }
 }
