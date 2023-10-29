@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 
 export default function Tabs ({ localStorageRoomsArr, setlocalStorageRoomsArr, socket, roomTabs, setroomTabs }) {
@@ -7,9 +7,9 @@ export default function Tabs ({ localStorageRoomsArr, setlocalStorageRoomsArr, s
   // console.log('local storage rooms', localStorageRoomsArr)
 
   const addRoom = (room) => {
-    console.log('add room', room)
+    console.log('add room func to join: ', room)
     if (room !== '' && !localStorageRoomsArr.includes(room)) {
-      console.log('emit join-room with data: ', room)
+      console.log('emit join with data: ', room)
       socket.emit('join', '4444', room, (room, count) => {
         console.log(`emitted join ${room}`)
         roomRef.current.value = ''
@@ -32,6 +32,8 @@ export default function Tabs ({ localStorageRoomsArr, setlocalStorageRoomsArr, s
       navigate('/main')
     })
   }
+  useEffect(() => {
+
   socket?.on('left', ({ room, count }) => {
     console.log(`left room ${room}, count is ${count}`)
     // set count for room in roomTabs
@@ -39,6 +41,12 @@ export default function Tabs ({ localStorageRoomsArr, setlocalStorageRoomsArr, s
     roomTabs[roomTab] = { room, users: count }
     setroomTabs([...roomTabs])
   })
+
+    return () => {
+      socket?.off('left')
+    }
+  }, [socket, roomTabs])
+
 
   const joinRoom = (room) => {
     console.log(`clicked on tab to join room: ${room}`)

@@ -61,7 +61,16 @@ const App = () => {
     }
 
     socket.on('joined', ({ room, count, from }) => {
+      //increment count in room when OTHER people join
       console.log('socket  received joined event', { room, count, from })
+      //if from is my id then return
+      if (from === socket.id)
+      {
+        console.log(`req to join ${room}  is from ${from}, same as socket id ${socket.id}`)
+        return
+      }
+
+
       // increment count in room
       const index = roomTabs.findIndex(obj => obj.room === room)
       // if index is -1, room is not in roomTabs and should be added
