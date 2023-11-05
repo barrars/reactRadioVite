@@ -12,6 +12,8 @@ import ErrorPage from './error-page'
 // import { action as destroyAction } from './routes/destroy'
 import Index from './routes'
 import App from './App'
+import { RoomTabsProvider } from './context/RoomtabsContext'
+
 // import { action as destroyAction } from './routes/destroy'
 
 const router = createBrowserRouter([
@@ -53,7 +55,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <OnlineStatusProvider>
+    <RoomTabsProvider>
+
     <RouterProvider router={router}/>
+    </RoomTabsProvider>
     </OnlineStatusProvider>
 
   </React.StrictMode>

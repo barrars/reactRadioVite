@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Main from './components/Main'
 import { inputName } from './helpers/methods'
 import useSocket from './hooks/useSocket'
 import useLocalStorage from './hooks/useLocalStorage'
+import { useRoomTabs } from './context/RoomtabsContext'
+
 const App = () => {
   const [localStorageRoomsArr, setlocalStorageRoomsArr] = useLocalStorage('rooms', ['main'])
-  const [roomTabs, setroomTabs] = useState([{ room: 'main', users: 1 }])
-  // console.log(`localStorageRoomsArr type is ${typeof (localStorageRoomsArr)}`)
+  const { roomTabs, setRoomTabs } = useRoomTabs();
   const [username, setUsername] = useLocalStorage('username', null)
   // eslint-disable-next-line no-unused-vars
   const [socketConnection, setSocketConnection] = useState('false')
@@ -48,20 +49,23 @@ const App = () => {
 
     // Once all promises are resolved, update the state
     Promise.all(promises).then(() => {
-      setroomTabs([...roomTabs])
+      console.log(roomTabs);
+      setRoomTabs([...roomTabs])
     })
     // check  rooms array includes username
     if (!localStorageRoomsArr.includes(username)) {
+      console.log(roomTabs);
       // if not, join and add it
       socket.emit('join', '2222', username, (room, count) => {
         console.log(`joined room ${room}, count is ${count}`)
         setlocalStorageRoomsArr([...localStorageRoomsArr, username])
-        setroomTabs([...roomTabs, { room, users: count }])
+        setRoomTabs([...roomTabs, { room, users: count }])
       })
     }
 
     socket.on('joined', ({ room, count, from }) => {
       //increment count in room when OTHER people join
+      console.log(roomTabs);
       console.log('socket  received joined event', { room, count, from })
       //if from is my id then return
       if (from === socket.id)
@@ -73,20 +77,22 @@ const App = () => {
 
       // increment count in room
       const index = roomTabs.findIndex(obj => obj.room === room)
+      console.log(roomTabs);
+      console.log(room);
       // if index is -1, room is not in roomTabs and should be added
       console.log(`index of room ${room} is ${index}`);
       if (index === -1) {
         console.log(`room ${room} is not in roomTabs, adding it`);
         roomTabs.push({ room, users: count })
         console.log([...roomTabs])
-        setroomTabs([...roomTabs])
+        setRoomTabs([...roomTabs])
         return
       } else if (index !== -1) {
       roomTabs[index] = { room, users: count }
       console.log(`roomTabs is ${roomTabs}`)
       console.log(roomTabs);
       // update roomTabs
-      setroomTabs([...roomTabs])
+      setRoomTabs([...roomTabs])
       }
     })
 
@@ -108,10 +114,11 @@ const App = () => {
       socket.off('joined')
       socket.off('disconnect')
     }
-  }, [username, socket])
+  }, [username, socket, setRoomTabs, localStorageRoomsArr])
 
   // useEffect isConnected
-
+  console.log('LAST CHANCE');
+  console.log(roomTabs);
   return (
 
     <>
@@ -129,7 +136,7 @@ const App = () => {
         <div>
           {/* <Outlet username={username}/> */}
           {/* <p>socket connected?  {socketConnection} id = {socketId}</p> */}
-          <Main setroomTabs={setroomTabs} username={username} roomTabs={roomTabs} localStorageRoomsArr={localStorageRoomsArr} setlocalStorageRoomsArr={setlocalStorageRoomsArr} socket={socket} socketConnection={socketConnection} setSocketConnection={setSocketConnection} socketId={socketId} />
+          <Main  username={username} localStorageRoomsArr={localStorageRoomsArr} setlocalStorageRoomsArr={setlocalStorageRoomsArr} socket={socket} socketConnection={socketConnection} setSocketConnection={setSocketConnection} socketId={socketId} />
         </div>
       )}
     </>

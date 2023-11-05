@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Chats from './Chats/Chats'
 import SongList from './songList/SongList'
 import ChatBox from './ChatBox/ChatBox'
@@ -8,9 +8,12 @@ import Jukebox from './jukebox/Jukebox'
 import { useOnlineStatus } from '../helpers/useOnlineStatus'
 import Tabs from './tabs/Tabs'
 import { useLocation } from 'react-router-dom'
+// import { RoomTabsProvider } from '../context/RoomtabsContext'
 
-export default function Main ({ setroomTabs, username, roomTabs, localStorageRoomsArr, setlocalStorageRoomsArr, socket, setSocketConnection, socketConnection, socketId }) {
+export default function Main ({ username, localStorageRoomsArr, setlocalStorageRoomsArr, socket, setSocketConnection, socketConnection, socketId }) {
   // get navigator location
+  // const { roomTabs, setRoomTabs } = useContext(RoomTabsProvider);
+
   const pathname = useLocation().pathname.split('/')[1]
   // get roomid from url
   // console.log('pathname', pathname || '/')
@@ -42,7 +45,7 @@ export default function Main ({ setroomTabs, username, roomTabs, localStorageRoo
 
   return (
     <div className='h-screen grid grid-rows-[repeat(12,_minmax(0,_1fr))]'>
-      <Tabs localStorageRoomsArr={localStorageRoomsArr} setlocalStorageRoomsArr={setlocalStorageRoomsArr} socket={socket} roomTabs={roomTabs} setroomTabs={setroomTabs}/>
+      <Tabs localStorageRoomsArr={localStorageRoomsArr} setlocalStorageRoomsArr={setlocalStorageRoomsArr} socket={socket}/>
 
       <Jukebox socket={socket} setSongList={setSongList} songList={songList} socketConnection={socketConnection} setSocketConnection={setSocketConnection} socketId={socketId}/>
       <div className='row-[span_10_/_span_10] grid grid-cols-2'>
