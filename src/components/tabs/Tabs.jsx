@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import  { useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useRoomTabs } from "../../context/RoomtabsContext";
 
@@ -12,8 +12,19 @@ export default function Tabs({
   const roomRef = useRef(null);
   // console.log('local storage rooms', localStorageRoomsArr)
 
+
   const addRoom = (room) => {
     console.log("add room func to join: ", room);
+    fetch(import.meta.env.VITE_REACT_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ socket: socket.id, username: socket.username }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+
+      });
     if (room !== "" && !localStorageRoomsArr.includes(room)) {
       console.log("emit join with data: ", room);
       socket.emit("join", "addRoom from tabs.js", room, (room, count) => {
@@ -26,63 +37,42 @@ export default function Tabs({
       });
     }
   };
-/* refactored removeRoom func from gpt */
-  const removeRoom = (room) => {
-    console.log('remove room', room);
+  /* refactored removeRoom func from gpt */
+  const removeRoom = async (room) => {
+    console.log("remove room", room);
 
-    if (room === 'main' || room === socket.username) return;
-
-    socket.emit('leave', room, (room) => {
+    if (room === "main" || room === socket.username) return;
+    try {
+      await new Promise((resolve, reject) => {
+        socket.emit("leave", room, (room) => {
+          if (room) {
+            console.log(`left room ${room}!!!!!!!!`);
+            resolve()
+          }
+          else reject("error leaving room");
+        });
+      });
       console.log(`before leaving ${JSON.stringify(roomTabs)}`);
+      setlocalStorageRoomsArr((prevRooms) =>{
+        console.log(prevRooms);
+        return prevRooms.filter((r) => r !== room)
+      }
+      );
+      console.log('code execution is stopping here');
+      setRoomTabs((prevRoomTabs) =>{
 
-      setRoomTabs(prevRoomTabs => {
-        const newRoomTabs = prevRoomTabs.filter(obj => obj.room !== room);
-        console.log(`removed room ${room}`, newRoomTabs);
-        return newRoomTabs;
-      });
-      // setroomTabs(prevRoomTabs => {
-      //   const newRoomTabs = prevRoomTabs.filter(obj => obj.room !== room);
-      //   console.log(`removed room ${room}`, newRoomTabs);
-      //   return newRoomTabs;
-      // });
-      console.log(roomTabs);
+        console.log(prevRoomTabs)
+        return prevRoomTabs.filter((obj) => obj.room !== room)
+      }
+      );
 
-      setlocalStorageRoomsArr(prevRooms => {
-        const newRooms = prevRooms.filter(r => r !== room);
-        console.log(newRooms);
-        return newRooms;
-      });
 
-      navigate('/main');
-    });
+      navigate("/main");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-
-  // const removeRoom = (room) => {
-  //   console.log("remove room", room);
-  //   if (room === "main") return;
-  //   if (room === socket.username) return;
-  //   socket.emit("leave", room, async (room) => {
-  //     console.log(`before leaving ${JSON.stringify(roomTabs)}`);
-  //     roomTabs.splice(
-  //       roomTabs.findIndex((obj) => obj.room === room),
-  //       1
-  //     );
-  //     setroomTabs((prevRoomTabs) => {
-  //       const newRoomTabs = prevRoomTabs.filter((obj) => obj.room !== room);
-  //       console.log(`removed room ${room}`, newRoomTabs);
-  //       return newRoomTabs;
-  //     });
-  //     setlocalStorageRoomsArr((prevRooms) => {
-  //       const newRooms = prevRooms.filter((r) => r !== room);
-  //       console.log(newRooms);
-  //       return newRooms;
-  //     });
-  //     console.log(`removed room ${room}`, roomTabs);
-  //     console.log(localStorageRoomsArr);
-  //     await navigate("/main");
-  //   });
-  // };
   useEffect(() => {
     socket?.on("left", ({ room, count }) => {
       console.log(`left room ${room}, count is ${count}`);
@@ -95,7 +85,7 @@ export default function Tabs({
     return () => {
       socket?.off("left");
     };
-  }, [socket, roomTabs,setRoomTabs]);
+  }, [socket, roomTabs, setRoomTabs]);
 
   const joinRoom = (room) => {
     console.log(`clicked on tab to join room: ${room}`);

@@ -11,6 +11,8 @@ import { useLocation } from 'react-router-dom'
 // import { RoomTabsProvider } from '../context/RoomtabsContext'
 
 export default function Main ({ username, localStorageRoomsArr, setlocalStorageRoomsArr, socket, setSocketConnection, socketConnection, socketId }) {
+  console.log(socketId)
+
   // get navigator location
   // const { roomTabs, setRoomTabs } = useContext(RoomTabsProvider);
 
@@ -25,8 +27,9 @@ export default function Main ({ username, localStorageRoomsArr, setlocalStorageR
   //   nav('/main')
   // }
   useEffect(() => {
-    console.log(pathname)
-    if (!socket?.username) return
+    if (!socket) return
+    // console.log(pathname)
+    // if (!socket?.username) return
     const username = socket?.username
     console.log(`online is ${online} and id is ${username}`)
     console.log(`loading chats and songs for ${pathname} and ${username}`)
@@ -35,7 +38,7 @@ export default function Main ({ username, localStorageRoomsArr, setlocalStorageR
     // if (online && username) {
     // }
   },
-  [online, socket?.username, pathname])
+  [online, pathname, socket, username])
   // [online, roomid, socket, loadChats, getSongs, nav, setRooms, rooms, username, setChats, setSongList, songList, chats])
 
   useEffect(() => {

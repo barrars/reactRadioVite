@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Main from './components/Main'
 import { inputName } from './helpers/methods'
 import useSocket from './hooks/useSocket'
@@ -37,7 +37,7 @@ const App = () => {
 
     // Map over the rooms and for each room, return a promise
     const promises = localStorageRoomsArr.map((room, i) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         socket.emit('join', '1111', room, (r, c) => {
           console.log(r, c)
           console.log(`joined room ${r} from localstorage, count is ${c}`)
@@ -49,7 +49,6 @@ const App = () => {
 
     // Once all promises are resolved, update the state
     Promise.all(promises).then(() => {
-      console.log(roomTabs);
       setRoomTabs([...roomTabs])
     })
     // check  rooms array includes username
@@ -59,7 +58,7 @@ const App = () => {
       socket.emit('join', '2222', username, (room, count) => {
         console.log(`joined room ${room}, count is ${count}`)
         setlocalStorageRoomsArr([...localStorageRoomsArr, username])
-        setRoomTabs([...roomTabs, { room, users: count }])
+        setRoomTabs(roomTabs=>[...roomTabs, { room, users: count }])
       })
     }
 
@@ -114,7 +113,7 @@ const App = () => {
       socket.off('joined')
       socket.off('disconnect')
     }
-  }, [username, socket, setRoomTabs, localStorageRoomsArr])
+  }, [socket, localStorageRoomsArr, username,  setRoomTabs])
 
   // useEffect isConnected
   console.log('LAST CHANCE');
